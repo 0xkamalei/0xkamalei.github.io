@@ -1,0 +1,18 @@
+entries:
+  - title: me
+    entries:
+      - title: >-
+          <a href='https://github.com/0xleizhang' target='_blank'><i class='fa-brands fa-github'></i></a>
+          <a href='https://space.bilibili.com/284623903/' target='_blank'><i class='fa-brands fa-bilibili'></i></a>
+          <a href='https://www.youtube.com/@kamaleizhang' target='_blank'><i class='fa-brands fa-youtube'></i></a>
+  - title: recent posts
+    post_list:
+      limit: 5
+      show_more: true
+      show_more_text: See More...
+      show_more_url: posts
+  - title: this blog
+    entries:
+      - title: >-
+          <a href="index.xml"><i class='fa-solid fa-rss'></i></a> <a href="tags"><i class='fa-solid fa-tags'></i></a> <a href="categories"><i class='fa-solid fa-sitemap'></i></a>
+      

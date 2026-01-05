@@ -1,0 +1,17 @@
+baseURL: 'https://leilog.io'
+languageCode: 'zh-CN'
+title: Lei's blog
+
+theme: nostyle
+disqusShortname: leilog
+markup:
+  tableOfContents:
+    startLevel: 1
+    endLevel: 5
+    ordered: false
+server:
+  headers:
+    - for: /*
+      values:
+        Content-Security-Policy: >-
+         img-src *; script-src * 'unsafe-inline';
