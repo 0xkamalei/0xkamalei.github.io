@@ -1,0 +1,89 @@
+---
+import { type CollectionEntry, getCollection, render } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+
+export async function getStaticPaths() {
+	const posts = await getCollection('blog');
+	return posts.map((post) => ({
+		params: { slug: post.slug || post.id.replace(/\.md$/, '') },
+		props: post,
+	}));
+}
+type Props = CollectionEntry<'blog'>;
+
+const post = Astro.props;
+const { Content } = await render(post);
+---
+
+<Layout title={post.data.title}>
+	<article>
+        <header>
+            <h1>{post.data.title}</h1>
+            <div class="meta">
+                <time datetime={post.data.date.toISOString()}>
+                    {post.data.date.toLocaleDateString('en-us', {
+                        year: 'numeric',
+                        month: 'short',
+                        day: 'numeric',
+                    })}
+                </time>
+                {post.data.categories && (
+                    <div class="categories">
+                        {post.data.categories.map(cat => <span class="category">{cat}</span>)}
+                    </div>
+                )}
+            </div>
+        </header>
+		<div class="content">
+		    <Content />
+        </div>
+	</article>
+</Layout>
+
+<style>
+    header {
+        margin-bottom: 2rem;
+    }
+	h1 {
+		margin: 0 0 0.5rem 0;
+        font-size: 2.5rem;
+        font-weight: 700;
+	}
+    .meta {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+		font-size: 0.9rem;
+		color: var(--text-secondary);
+    }
+    .categories {
+        display: flex;
+        gap: 0.5rem;
+    }
+    .category {
+        background-color: var(--hover-color);
+        padding: 0.1rem 0.5rem;
+        border-radius: 4px;
+        font-size: 0.8rem;
+    }
+    .content {
+        line-height: 1.8;
+        font-size: 1.1rem;
+    }
+    .content :global(p) {
+        margin-bottom: 1.5rem;
+    }
+    .content :global(img) {
+        max-width: 100%;
+        height: auto;
+        border-radius: 8px;
+        margin: 2rem 0;
+        box-shadow: var(--shadow);
+    }
+    .content :global(pre) {
+        padding: 1rem;
+        border-radius: 8px;
+        overflow-x: auto;
+        margin: 1.5rem 0;
+    }
+</style>

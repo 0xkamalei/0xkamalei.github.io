@@ -1,0 +1,197 @@
+---
+import ThemeToggle from '../components/ThemeToggle.astro';
+
+interface Props {
+	title: string;
+}
+
+const { title } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="description" content="Astro description" />
+		<meta name="viewport" content="width=device-width" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+		<meta name="generator" content={Astro.generator} />
+		<title>{title}</title>
+        <script is:inline>
+            // Inline script to avoid FOUC
+            const theme = (() => {
+                if (typeof localStorage !== 'undefined' && localStorage.getItem('theme')) {
+                    return localStorage.getItem('theme');
+                }
+                if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                    return 'dark';
+                }
+                return 'light';
+            })();
+            document.documentElement.setAttribute('data-theme', theme);
+        </script>
+	</head>
+	<body>
+		<nav>
+            <div class="nav-content">
+                <a href="/" class="logo">Lei Blog</a>
+                <ThemeToggle />
+            </div>
+		</nav>
+		<main>
+			<slot />
+		</main>
+        <footer>
+            <div class="footer-content">
+                <p>&copy; {new Date().getFullYear()} Lei Blog</p>
+                <a href="https://leix.dev" target="_blank" rel="noopener noreferrer">Main Site: leix.dev</a>
+            </div>
+        </footer>
+		<style is:global>
+			:root {
+                --primary-color: #6200ee;
+                --primary-variant: #3700b3;
+                --secondary-color: #03dac6;
+                
+                /* Light Theme */
+                --bg-color: #ffffff;
+                --surface-color: #ffffff;
+                --text-color: #000000;
+                --text-secondary: #757575;
+                --border-color: #e0e0e0;
+                --hover-color: rgba(0, 0, 0, 0.04);
+                --shadow: 0 2px 4px rgba(0,0,0,0.1);
+			}
+
+            [data-theme='dark'] {
+                --bg-color: #121212;
+                --surface-color: #1e1e1e;
+                --text-color: #ffffff;
+                --text-secondary: #b0b0b0;
+                --border-color: #333333;
+                --hover-color: rgba(255, 255, 255, 0.08);
+                --shadow: 0 4px 6px rgba(0,0,0,0.3);
+            }
+
+			html {
+				font-family: 'Roboto', system-ui, sans-serif;
+				background-color: var(--bg-color);
+				color: var(--text-color);
+                transition: background-color 0.3s, color 0.3s;
+			}
+
+            body {
+                margin: 0;
+                display: flex;
+                flex-direction: column;
+                min-height: 100vh;
+            }
+
+			main {
+				margin: auto;
+				padding: 2rem 1rem;
+				width: 800px;
+				max-width: calc(100% - 2rem);
+				font-size: 16px;
+				line-height: 1.6;
+			}
+
+            nav {
+                background-color: var(--surface-color);
+                border-bottom: 1px solid var(--border-color);
+                box-shadow: var(--shadow);
+                position: sticky;
+                top: 0;
+                z-index: 100;
+                padding: 0.5rem 0;
+            }
+
+            .nav-content {
+                max-width: 800px;
+                margin: 0 auto;
+                padding: 0 1rem;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+            .logo {
+                color: var(--primary-color);
+                text-decoration: none;
+                font-weight: 700;
+                font-size: 1.5rem;
+                letter-spacing: -0.5px;
+            }
+
+            a {
+                color: var(--primary-color);
+                text-decoration: none;
+                transition: color 0.2s;
+            }
+
+            a:hover {
+                color: var(--primary-variant);
+            }
+
+            h1, h2, h3, h4, h5, h6 {
+                color: var(--text-color);
+                line-height: 1.2;
+                margin-top: 2rem;
+                margin-bottom: 1rem;
+            }
+
+            article {
+                background-color: var(--surface-color);
+                padding: 2rem;
+                border-radius: 8px;
+                box-shadow: var(--shadow);
+                border: 1px solid var(--border-color);
+            }
+
+            @media (max-width: 600px) {
+                article {
+                    padding: 1rem;
+                    border: none;
+                    box-shadow: none;
+                    background: transparent;
+                }
+            }
+
+            footer {
+                margin-top: auto;
+                padding: 2rem 1rem;
+                border-top: 1px solid var(--border-color);
+                background-color: var(--surface-color);
+            }
+
+            .footer-content {
+                max-width: 800px;
+                margin: 0 auto;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                color: var(--text-secondary);
+                font-size: 0.9rem;
+            }
+
+            .footer-content a {
+                color: var(--text-secondary);
+                text-decoration: underline;
+                text-underline-offset: 4px;
+            }
+
+            .footer-content a:hover {
+                color: var(--primary-color);
+            }
+
+            @media (max-width: 600px) {
+                .footer-content {
+                    flex-direction: column;
+                    gap: 1rem;
+                    text-align: center;
+                }
+            }
+		</style>
+	</body>
+</html>
