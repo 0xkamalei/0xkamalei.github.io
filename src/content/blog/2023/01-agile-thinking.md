@@ -1,0 +1,78 @@
+---
+title: "敏捷实践的一些思考"
+date: 2023-03-29
+slug: agile-thinking
+tags: ['敏捷', '职场']
+draft: false
+---
+
+
+我在team slack thread的发言。
+
+
+# 关于估点 
+
+
+我还是建议使用Jira的 Async Poker
+
+
+具体执行过程是：
+
+1. PO/TMP/SM 根据每个sprint的goals起草Planning Draft，planning draft初步确定了Sprint的ticket范围，一般devs是不参与这个环节的。
+2. 之后start poker gamma，将链接发给所有人，devs异步估点
+3. 所有人估点结束后，开planning会议，过每个ticket，最小估点数和最大估点人数发言，讨论可能的风险，交流scope，之后确定ticket点数
+4. planning过程中可以添加或删除ticket，确定sprint scope。
+
+一般来说估点过程中就将想做的卡assign给自己了。如果遇到卡片无人认领的情况，建议参考美区的经验，planning的时候将大部分卡片都assign到人，可以留一部分优先级不高的卡为TODO状态。
+
+
+# 关于建卡以及sprint过程中卡的变动
+
+
+子任务不能称之为新卡，如果工作内容是ticket的一部分就应该建任务卡而不是story卡片。
+
+
+sprint过程中允许建新卡到sprint，但是需要做到两点
+
+
+必要的解释这个ticket需要放在这个sprint做的原因。
+
+
+新建的ticket要告知team所有人，一般是通过Jira+slack集成 推送消息到slack channel.
+
+
+# 关于接卡
+
+
+建议优先接领域不熟悉的卡片，也就是说要交叉工作。
+
+
+建议这样做的原因有一些优点
+
+
+首先对个人来说有成长的机会
+
+
+对team来说有利于codereview,
+
+
+更有利于缩小team的knowledge gap.其实KT也是为了缩写team的knowledge gap。
+
+
+# 为什么要做知识分享以及为什么要估点
+
+
+这个是我们一个PM告诉我的我认为很有道理分享给大家。
+
+
+首先知识分享是为了缩小team的knowledge gap,让team每个成员对work scope的知识都具有相当的水平，那为什么要缩小team的knowledge gap呢？为了对team的效率有更好的预期，为了更好的planning。
+
+
+我们切换一下管理者的视角，举一个例子，1份产品设计预估100个点，管理者需要知道这份产品什么时候能交付，那么他就需要知道这个team的工作效率。那么怎么能知道这个team的工作效率呢？
+
+
+就是更准确估点，团队成员更稳定的输出。也就是说估点的目的不是为提高效率，而是摸清效率，通过多次sprint之后，团队的效率应该趋于稳定才是正常现象。
+
+
+所以一般需要在sprint retro的时候通过Google sheet在线图表回顾一下上个Sprint的点数达成情况
+

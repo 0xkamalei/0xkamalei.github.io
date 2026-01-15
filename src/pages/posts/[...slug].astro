@@ -1,6 +1,7 @@
 ---
 import { type CollectionEntry, getCollection, render } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
+import TableOfContents from '../../components/TableOfContents.astro';
 
 export async function getStaticPaths() {
 	const posts = await getCollection('blog');
@@ -12,78 +13,284 @@ export async function getStaticPaths() {
 type Props = CollectionEntry<'blog'>;
 
 const post = Astro.props;
-const { Content } = await render(post);
+const { Content, headings } = await render(post);
+
+// Generate description from content or use first 150 chars
+const description = post.data.description || post.body?.slice(0, 150).replace(/[#*`\n]/g, '').trim() + '...';
+
+// Get reading time estimate
+const wordCount = post.body?.split(/\s+/).length || 0;
+const readingTime = Math.max(1, Math.ceil(wordCount / 200));
 ---
 
-<Layout title={post.data.title}>
+<Layout 
+	title={post.data.title}
+	description={description}
+	article={true}
+	publishedTime={post.data.date.toISOString()}
+	tags={post.data.tags || []}
+>
+	<TableOfContents headings={headings} />
 	<article>
         <header>
+			<a href="/" class="back-link">← 返回首页</a>
             <h1>{post.data.title}</h1>
             <div class="meta">
                 <time datetime={post.data.date.toISOString()}>
-                    {post.data.date.toLocaleDateString('en-us', {
+                    {post.data.date.toLocaleDateString('zh-CN', {
                         year: 'numeric',
-                        month: 'short',
+                        month: 'long',
                         day: 'numeric',
                     })}
                 </time>
-                {post.data.categories && (
-                    <div class="categories">
-                        {post.data.categories.map(cat => <span class="category">{cat}</span>)}
-                    </div>
+				<span class="meta-divider">·</span>
+				<span class="reading-time">{readingTime} 分钟阅读</span>
+                {post.data.categories && post.data.categories.length > 0 && (
+					<>
+						<span class="meta-divider">·</span>
+                    	<div class="categories">
+                        	{post.data.categories.map(cat => <span class="category">{cat}</span>)}
+                    	</div>
+					</>
                 )}
             </div>
+			{post.data.tags && post.data.tags.length > 0 && (
+				<div class="tags">
+					{post.data.tags.map(tag => <span class="tag">#{tag}</span>)}
+				</div>
+			)}
         </header>
 		<div class="content">
 		    <Content />
         </div>
+		<footer class="article-footer">
+			<a href="/" class="back-home">← 返回文章列表</a>
+		</footer>
 	</article>
 </Layout>
 
 <style>
     header {
-        margin-bottom: 2rem;
+        margin-bottom: 2.5rem;
+		padding-bottom: 2rem;
+		border-bottom: 1px solid var(--border-color);
     }
-	h1 {
-		margin: 0 0 0.5rem 0;
-        font-size: 2.5rem;
-        font-weight: 700;
+
+	.back-link {
+		display: inline-flex;
+		align-items: center;
+		font-size: 0.875rem;
+		color: var(--text-secondary);
+		margin-bottom: 1.5rem;
+		transition: color 0.15s ease;
 	}
+
+	.back-link:hover {
+		color: var(--primary-color);
+	}
+
+	h1 {
+		margin: 0 0 1rem 0;
+        font-size: 2rem;
+        font-weight: 700;
+		line-height: 1.3;
+		letter-spacing: -0.02em;
+		font-family: 'Noto Serif SC', 'Inter', serif;
+	}
+
     .meta {
         display: flex;
-        gap: 1rem;
+		flex-wrap: wrap;
+        gap: 0.5rem;
         align-items: center;
-		font-size: 0.9rem;
+		font-size: 0.875rem;
 		color: var(--text-secondary);
     }
+
+	.meta-divider {
+		color: var(--text-tertiary);
+	}
+
+	.reading-time {
+		color: var(--text-tertiary);
+	}
+
     .categories {
         display: flex;
         gap: 0.5rem;
     }
+
     .category {
         background-color: var(--hover-color);
-        padding: 0.1rem 0.5rem;
+		color: var(--primary-color);
+        padding: 0.125rem 0.625rem;
         border-radius: 4px;
-        font-size: 0.8rem;
+        font-size: 0.75rem;
+		font-weight: 500;
     }
+
+	.tags {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5rem;
+		margin-top: 1rem;
+	}
+
+	.tag {
+		color: var(--accent-color);
+		background-color: rgba(139, 92, 246, 0.1);
+		padding: 0.25rem 0.75rem;
+		border-radius: 16px;
+		font-size: 0.8125rem;
+		font-weight: 500;
+		transition: all 0.15s ease;
+	}
+
+	.tag:hover {
+		background-color: rgba(139, 92, 246, 0.2);
+	}
+
     .content {
-        line-height: 1.8;
-        font-size: 1.1rem;
+        line-height: 1.85;
+        font-size: 1.0625rem;
+		font-family: 'Noto Serif SC', 'Inter', serif;
+		color: var(--text-color);
     }
+
     .content :global(p) {
         margin-bottom: 1.5rem;
     }
+
+	.content :global(p:first-child) {
+		font-size: 1.125rem;
+		color: var(--text-secondary);
+	}
+
     .content :global(img) {
         max-width: 100%;
         height: auto;
-        border-radius: 8px;
+        border-radius: 12px;
         margin: 2rem 0;
         box-shadow: var(--shadow);
+		border: 1px solid var(--border-color);
     }
+
     .content :global(pre) {
-        padding: 1rem;
-        border-radius: 8px;
+        padding: 1.25rem;
+        border-radius: 12px;
         overflow-x: auto;
         margin: 1.5rem 0;
+		font-size: 0.875rem;
+		border: 1px solid var(--border-color);
     }
+
+	.content :global(h2) {
+		font-size: 1.5rem;
+		margin-top: 3rem;
+		margin-bottom: 1rem;
+		font-family: 'Inter', sans-serif;
+		padding-bottom: 0.5rem;
+		border-bottom: 1px solid var(--border-color);
+	}
+
+	.content :global(h3) {
+		font-size: 1.25rem;
+		margin-top: 2rem;
+		font-family: 'Inter', sans-serif;
+	}
+
+	.content :global(h4) {
+		font-size: 1.125rem;
+		margin-top: 1.5rem;
+		font-family: 'Inter', sans-serif;
+	}
+
+	.content :global(ul),
+	.content :global(ol) {
+		padding-left: 1.5rem;
+		margin-bottom: 1.5rem;
+	}
+
+	.content :global(li) {
+		margin-bottom: 0.5rem;
+	}
+
+	.content :global(a) {
+		color: var(--primary-color);
+		text-decoration: underline;
+		text-underline-offset: 3px;
+		text-decoration-color: rgba(37, 99, 235, 0.3);
+		transition: text-decoration-color 0.15s ease;
+	}
+
+	.content :global(a:hover) {
+		text-decoration-color: var(--primary-color);
+	}
+
+	.content :global(hr) {
+		border: none;
+		border-top: 1px solid var(--border-color);
+		margin: 2.5rem 0;
+	}
+
+	.content :global(table) {
+		width: 100%;
+		border-collapse: collapse;
+		margin: 1.5rem 0;
+		font-size: 0.9375rem;
+	}
+
+	.content :global(th),
+	.content :global(td) {
+		padding: 0.75rem 1rem;
+		border: 1px solid var(--border-color);
+		text-align: left;
+	}
+
+	.content :global(th) {
+		background-color: var(--bg-secondary);
+		font-weight: 600;
+	}
+
+	.article-footer {
+		margin-top: 3rem;
+		padding-top: 2rem;
+		border-top: 1px solid var(--border-color);
+	}
+
+	.back-home {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+		padding: 0.75rem 1.25rem;
+		background-color: var(--hover-color);
+		color: var(--text-color);
+		border-radius: 8px;
+		font-size: 0.9375rem;
+		font-weight: 500;
+		transition: all 0.15s ease;
+	}
+
+	.back-home:hover {
+		background-color: var(--primary-color);
+		color: white;
+	}
+
+	@media (max-width: 640px) {
+		h1 {
+			font-size: 1.625rem;
+		}
+
+		.content {
+			font-size: 1rem;
+		}
+
+		.content :global(h2) {
+			font-size: 1.375rem;
+		}
+
+		.content :global(h3) {
+			font-size: 1.125rem;
+		}
+	}
 </style>
