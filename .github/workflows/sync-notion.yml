@@ -34,13 +34,15 @@ jobs:
       - name: Check for changes
         id: git-check
         run: |
-          git diff --quiet || echo "changes=true" >> $GITHUB_OUTPUT
+          if [ -n "$(git status --porcelain src/content/blog/)" ]; then
+            echo "changes=true" >> $GITHUB_OUTPUT
+          fi
 
       - name: Commit and push changes
         if: steps.git-check.outputs.changes == 'true'
         run: |
           git config --local user.email "kamalei.zhang@gmail.com"
           git config --local user.name "0xkamalei"
-          git add src/content/blog/
+          git add src/content/blog/ .notion-sync-state.json
           git commit -m "chore: sync content from Notion"
           git push
