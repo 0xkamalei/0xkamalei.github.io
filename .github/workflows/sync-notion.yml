@@ -39,8 +39,8 @@ jobs:
       - name: Commit and push changes
         if: steps.git-check.outputs.changes == 'true'
         run: |
-          git config --local user.email "github-actions[bot]@users.noreply.github.com"
-          git config --local user.name "github-actions[bot]"
+          git config --local user.email "kamalei.zhang@gmail.com"
+          git config --local user.name "0xkamalei"
           git add src/content/blog/
           git commit -m "chore: sync content from Notion"
           git push
